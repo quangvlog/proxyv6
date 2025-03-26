@@ -107,35 +107,35 @@ sudo chmod 755 /usr/local/bin/3proxy
 sudo chmod 755 /var/log/3proxy
 check_success $? "Không thể cấu hình quyền truy cập"
 
-# Запрос выбора типа установки
+# Yêu cầu chọn loại cài đặt
 echo "Выберите тип установки:"
-echo "1. С авторизацией"
-echo "2. Без авторизации"
-echo "3. Без авторизации для определенных IP"
-read -p "Введите номер выбора (1, 2 или 3): " choice
+echo "1. Cho phép"
+echo "2. Không cho phép"
+echo "3. Không có quyền hạn cho một số IP nhất định"
+read -p "Nhập số lựa chọn (1, 2 hoặc 3): " choice
 
-# Запрос порта
+# Yêu cầu cổng
 while true; do
-    read -p "Введите порт (1024-65535): " port
+    read -p "Nhập cổng (1024-65535):  " port
     if [[ "$port" =~ ^[0-9]+$ ]] && [ "$port" -ge 1024 ] && [ "$port" -le 65535 ]; then
         break
     else
-        echo "Неверный порт. Попробуйте снова."
+        echo "Cổng không hợp lệ. Hãy thử lại."
     fi
 done
 
-# Создание конфигурационного файла в зависимости от выбора
+# Tạo một tập tin cấu hình tùy thuộc vào lựa chọn
 case $choice in
     1)
-        # Запрос данных пользователя
-        read -p "Введите имя пользователя: " username
+        # Yêu cầu dữ liệu người dùng
+        read -p "Nhập tên người dùng:" username
         while true; do
-            read -s -p "Введите пароль: " password
+            read -s -p "Nhập mật khẩu: " password
             echo
-            read -s -p "Подтвердите пароль: " password2
+            read -s -p "Xác nhận mật khẩu:" password2
             echo
             [ "$password" = "$password2" ] && break
-            echo "Пароли не совпадают. Попробуйте снова."
+            echo "Mật khẩu không khớp. Hãy thử lại"
         done
 
         cat << EOF | sudo tee /usr/local/3proxy/conf/3proxy.cfg
@@ -166,15 +166,15 @@ proxy -p$port
 EOF
         ;;
 3)
-    read -p "Введите разрешенные IP-адреса, разделенные запятыми без пробелов: " allowed_ips
+    read -p "Nhập địa chỉ IP được phép, phân tách bằng dấu phẩy không có khoảng trắng: " allowed_ips
 
-    # Преобразование IP-адресов в формат для конфигурации
+    # Chuyển đổi địa chỉ IP sang định dạng cấu hình
     IFS=',' read -ra ADDR <<< "$allowed_ips"
 
-    # Объединение IP-адресов в одну строку
+    # Nối các địa chỉ IP thành một dòng
     allow_ips="${ADDR[*]}"
 
-    # Генерация конфигурационного файла
+    # Tạo tập tin cấu hình
     cat << EOF | sudo tee /usr/local/3proxy/conf/3proxy.cfg
 nserver 8.8.8.8
 nserver 8.8.4.4
@@ -189,13 +189,13 @@ proxy -p$port -i0.0.0.0 -e0.0.0.0
 EOF
         ;;
     *)
-        echo "Неверный выбор. Скрипт завершен."
+        echo "Lựa chọn không hợp lệ. Đã chấm dứt tập lệnh."
         exit 1
         ;;
 esac
-check_success "Не удалось создать конфигурационный файл"
+check_success "Không tạo được tệp cấu hình"
 
-# Создание файла службы systemd
+# Tạo tệp dịch vụ systemd
 cat << EOF | sudo tee /usr/lib/systemd/system/3proxy.service
 [Unit]
 Description=3proxy tiny proxy server
@@ -217,18 +217,18 @@ RuntimeDirectory=3proxy
 WantedBy=multi-user.target
 Alias=3proxy.service
 EOF
-check_success "Не удалось создать файл службы systemd"
+check_success "Không tạo được tệp dịch vụ systemd"
 
-# Перезагрузка демона systemd и запуск службы 3proxy
+# Khởi động lại daemon systemd và khởi động dịch vụ 3proxy
 sudo systemctl daemon-reload
 sudo systemctl enable 3proxy
 sudo systemctl start 3proxy
-check_success "Не удалось запустить службу 3proxy"
+check_success "Không khởi động được dịch vụ 3proxy"
 
-echo "Установка завершена успешно."
-echo "Настройки 3proxy:"
-echo "Порт: $port"
-echo "Конфигурационный файл: /usr/local/3proxy/conf/3proxy.cfg"
-echo "Лог-файлы: /var/log/3proxy/"
-echo "Docker установлен и текущий пользователь добавлен в группу docker."
-echo "Возможно, потребуется перезагрузка или выход из системы для применения изменений группы."
+echo "Quá trình cài đặt đã hoàn tất thành công."
+echo "Cài đặt 3proxy:"
+echo "Cổng: $port"
+echo "Tệp cấu hình: /usr/local/3proxy/conf/3proxy.cfg"
+echo "Tệp nhật ký: /var/log/3proxy/"
+echo "Docker đã được cài đặt và người dùng hiện tại đã được thêm vào nhóm docker."
+echo "Bạn có thể cần khởi động lại hoặc đăng xuất để áp dụng các thay đổi nhóm."
