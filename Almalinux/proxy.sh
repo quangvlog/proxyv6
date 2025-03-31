@@ -86,7 +86,7 @@ echo "Ban muon tao bao nhieu proxy v6? Vi du 500"
 read COUNT
 
 FIRST_PORT=22000
-LAST_PORT=$(($FIRST_PORT + $COUNT))
+LAST_PORT=$(($FIRST_PORT + COUNT))
 
 gen_data >$WORKDIR/data.txt
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
