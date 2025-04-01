@@ -14,12 +14,6 @@ gen64() {
     echo "$1:$(ip64):$(ip64):$(ip64):$(ip64)"
 }
 
-echo "Ban muon tao bao nhieu proxy v6?"
-read COUNT
-
-FIRST_PORT=22000
-LAST_PORT=$(($FIRST_PORT + $COUNT - 1))
-
 install_3proxy() {
     echo "installing 3proxy"
     URL="https://github.com/z3APA3A/3proxy/archive/refs/tags/0.9.5.tar.gz"
@@ -78,8 +72,8 @@ echo "installing apps"
 
 install_3proxy
 
-echo "working folder = /home/bkns"
-WORKDIR="/home/bkns"
+echo "working folder = /home/quangvlog"
+WORKDIR="/home/quangvlog"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir -p $WORKDIR && cd $WORKDIR
 
@@ -87,6 +81,9 @@ IP4=$(curl -4 -s icanhazip.com)
 IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
 
 echo "Internal IP = ${IP4}. External sub for IP6 = ${IP6}"
+
+FIRST_PORT=22000
+LAST_PORT=22700
 
 gen_data >$WORKDIR/data.txt
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
@@ -108,6 +105,6 @@ bash /etc/rc.local
 
 gen_proxy_file_for_user
 rm -rf /root/setup.sh
-rm -rf /root/3proxy-3proxy-0.9.5
+rm -rf /root/3proxy-3proxy-0.8.6
 
 echo "Starting Proxy"
