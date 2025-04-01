@@ -72,8 +72,8 @@ echo "installing apps"
 
 install_3proxy
 
-echo "working folder = /home/quangvlog"
-WORKDIR="/home/quangvlog"
+echo "working folder = /home/bkns"
+WORKDIR="/home/bkns"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir -p $WORKDIR && cd $WORKDIR
 
@@ -82,11 +82,8 @@ IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
 
 echo "Internal IP = ${IP4}. External sub for IP6 = ${IP6}"
 
-echo "Ban muon tao bao nhieu Proxy v6? Vi du 500"
-read -r COUNT
-
 FIRST_PORT=22000
-LAST_PORT=$((FIRST_PORT + COUNT))
+LAST_PORT=22700
 
 gen_data >$WORKDIR/data.txt
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
