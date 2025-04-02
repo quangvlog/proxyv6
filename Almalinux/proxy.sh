@@ -6,14 +6,6 @@ random() {
     echo
 }
 
-fallocate -l 3G /swapfile
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-echo '/swapfile none swap sw 0 0' >> /etc/fstab
-
-sudo dnf install -y wget tar make gcc
-
 array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
 gen64() {
     ip64() {
@@ -72,7 +64,7 @@ gen_data() {
 
 gen_ifconfig() {
     cat <<EOF
-$(awk -F "/" '{print "ifconfig eth0 inet6 add " $5 "/64"}' ${WORKDATA})
+$(awk -F "/" '{print "ifconfig ens3 inet6 add " $5 "/64"}' ${WORKDATA})
 EOF
 }
 
@@ -80,8 +72,8 @@ echo "installing apps"
 
 install_3proxy
 
-echo "working folder = /home/quangvlog"
-WORKDIR="/home/quangvlog"
+echo "working folder = /home/bkns"
+WORKDIR="/home/bkns"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir -p $WORKDIR && cd $WORKDIR
 
@@ -90,11 +82,8 @@ IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
 
 echo "Internal IP = ${IP4}. External sub for IP6 = ${IP6}"
 
-echo "Ban muon tao bao nhieu proxy v6? Vi du 500"
-read -r COUNT
-
 FIRST_PORT=22000
-LAST_PORT=$(($FIRST_PORT + COUNT))
+LAST_PORT=22700
 
 gen_data >$WORKDIR/data.txt
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
