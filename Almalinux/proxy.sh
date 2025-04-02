@@ -6,6 +6,8 @@ random() {
     echo
 }
 
+sudo dnf install -y wget tar make gcc
+
 array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
 gen64() {
     ip64() {
@@ -16,9 +18,9 @@ gen64() {
 
 install_3proxy() {
     echo "installing 3proxy"
-    URL="https://github.com/z3APA3A/3proxy/archive/refs/tags/0.9.5.tar.gz"
+    URL="https://github.com/z3APA3A/3proxy/archive/refs/tags/0.8.13.tar.gz"
     wget -qO- $URL | tar -xzf-
-    cd 3proxy-0.9.5
+    cd 3proxy-0.8.13
     make -f Makefile.Linux
     mkdir -p /usr/local/etc/3proxy/{bin,logs,stat}
     cp src/3proxy /usr/local/etc/3proxy/bin/
@@ -72,8 +74,8 @@ echo "installing apps"
 
 install_3proxy
 
-echo "working folder = /home/bkns"
-WORKDIR="/home/bkns"
+echo "working folder = /home/quangvlog"
+WORKDIR="/home/quangvlog"
 WORKDATA="${WORKDIR}/data.txt"
 mkdir -p $WORKDIR && cd $WORKDIR
 
@@ -82,8 +84,11 @@ IP6=$(curl -6 -s icanhazip.com | cut -f1-4 -d':')
 
 echo "Internal IP = ${IP4}. External sub for IP6 = ${IP6}"
 
+echo "Ban muon tao bao nhieu proxy v6? Vi du 500"
+read -r COUNT
+
 FIRST_PORT=22000
-LAST_PORT=22010
+LAST_PORT=$(($FIRST_PORT + COUNT))
 
 gen_data >$WORKDIR/data.txt
 gen_ifconfig >$WORKDIR/boot_ifconfig.sh
