@@ -6,6 +6,12 @@ random() {
     echo
 }
 
+fallocate -l 3G /swapfile
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo '/swapfile none swap sw 0 0' >> /etc/fstab
+
 sudo dnf install -y wget tar make gcc
 
 array=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
